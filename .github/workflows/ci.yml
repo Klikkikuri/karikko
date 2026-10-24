@@ -7,27 +7,16 @@ on:
 permissions: {}
 
 jobs:
-  test:
+  package:
+    uses: ./.github/workflows/python-package.yml
+  build:
     runs-on: ubuntu-latest
+    needs: package
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
         with:
           version: "0.13.5"
-      # The packaged base rules must follow the suola tag in pyproject.toml, exactly. The committed file carries a
-      # three-line provenance header; compare the copy's body against the suola source.
-      - name: Check the base-rules copy
-        run: |
-          curl -fsSL https://raw.githubusercontent.com/Klikkikuri/suola/v0.7.0/rules.yaml -o /tmp/rules.yaml
-          tail -n +4 src/karikko/base_rules.yaml > /tmp/base-rules-body.yaml
-          diff /tmp/base-rules-body.yaml /tmp/rules.yaml
-      - name: Test on Python 3.12
-        env:
-          HYPOTHESIS_PROFILE: ci
-        run: |
-          uv python install 3.12
-          uv sync --frozen --group dev
-          uv run pytest -q
       - name: Build the wheel
         run: uv build
       - name: Check the wheel metadata
