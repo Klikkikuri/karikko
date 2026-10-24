@@ -11,9 +11,11 @@ dependencies = [
     "uvicorn>=0.38",
     "jinja2>=3.1",
     "faker>=38",
-    "suola",
+    # Direct references, so that the wheel resolves without `[tool.uv.sources]`. Network access at install time;
+    # the image is the offline artifact (README). Update `src/karikko/base_rules.yaml` with the suola tag.
+    "suola @ https://github.com/Klikkikuri/suola/releases/download/v0.7.0/suola-0.7.0-py3-none-any.whl",
     # `logging` needs the `tracing` extra, and `settings` imports yaml: Klikkikuri/Niitti#3, #4.
-    "niitti[all]",
+    "niitti[all] @ git+https://github.com/Klikkikuri/Niitti@09333ed0b8498ab8a9149ee60295a6818aff93f0",
     "pyyaml>=6",
 ]
 
@@ -29,11 +31,6 @@ dev = [
     "html5lib>=1.1",
     "httpx2>=2.16.0",
 ]
-
-[tool.uv.sources]
-# The suola release that the base rules (src/karikko/base_rules.yaml) follow. Update both together.
-suola = { url = "https://github.com/Klikkikuri/suola/releases/download/v0.7.0/suola-0.7.0-py3-none-any.whl" }
-niitti = { git = "https://github.com/Klikkikuri/Niitti", rev = "09333ed0b8498ab8a9149ee60295a6818aff93f0" }
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
