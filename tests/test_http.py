@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from paatti_devserver.chaos import MANIFEST_MAX_BYTES, RESOURCE_MAX_BYTES
+from karikko.chaos import MANIFEST_MAX_BYTES, RESOURCE_MAX_BYTES
 
 DOCUMENTS = ["manifest", "sites", "rules", "data"]
 
@@ -19,7 +19,7 @@ def test_front_page_without_a_seed_redirects_to_one(client_for):
 
 def test_front_page_carries_the_reproduce_command(client):
     html = client.get("/?seed=5").text
-    assert "paatti-devserver --pool_seed=1" in html and "/?seed=5" in html
+    assert "karikko --pool_seed=1" in html and "/?seed=5" in html
 
 
 def test_article_page_has_its_headline_in_h1_and_takes_any_section_case(client):

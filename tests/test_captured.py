@@ -6,11 +6,11 @@ import pytest
 import yaml
 from fastapi.testclient import TestClient
 
-from paatti_devserver import expectations as ex
-from paatti_devserver.app import create_app
-from paatti_devserver.captured import FAKE_PREFIX, fake_entry
-from paatti_devserver.settings import FeatureSettings
-from paatti_devserver.signing import BASE_RULES, CAPTURE_RULES, Signer
+from karikko import expectations as ex
+from karikko.app import create_app
+from karikko.captured import FAKE_PREFIX, fake_entry
+from karikko.settings import FeatureSettings
+from karikko.signing import BASE_RULES, CAPTURE_RULES, Signer
 
 from .conftest import make_settings
 

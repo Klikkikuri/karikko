@@ -125,7 +125,7 @@ class Settings(NiittiSettings):
     model_config = SettingsConfigDict(
         env_prefix="PAATTI_DEVSERVER_",
         env_nested_delimiter="__",
-        cli_prog_name="paatti-devserver",
+        cli_prog_name="karikko",
         cli_kebab_case=False,
         extra="ignore",
         # Niitti's file sources, which settings_customise_sources drops.
@@ -194,7 +194,7 @@ class Settings(NiittiSettings):
 
         The chaos settings are given as the nearest profile and the settings that differ from it.
         """
-        args = ["paatti-devserver", f"--pool_seed={self.pool_seed}"]
+        args = ["karikko", f"--pool_seed={self.pool_seed}"]
         profiles = {name: ChaosSettings(**CHAOS_PROFILES[name]) for name in ("none", "true", "all")}
         profile = min(profiles, key=lambda name: len(_differences(self.chaos, profiles[name])))
         if profile != "none":

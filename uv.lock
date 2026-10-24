@@ -270,6 +270,51 @@ wheels = [
 ]
 
 [[package]]
+name = "karikko"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "faker" },
+    { name = "fastapi" },
+    { name = "jinja2" },
+    { name = "niitti", extra = ["all"] },
+    { name = "pyyaml" },
+    { name = "suola" },
+    { name = "uvicorn" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "beautifulsoup4" },
+    { name = "html5lib" },
+    { name = "httpx2" },
+    { name = "hypothesis" },
+    { name = "pytest" },
+    { name = "soupsieve" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "faker", specifier = ">=38" },
+    { name = "fastapi", specifier = ">=0.120" },
+    { name = "jinja2", specifier = ">=3.1" },
+    { name = "niitti", extras = ["all"], git = "https://github.com/Klikkikuri/Niitti?rev=09333ed0b8498ab8a9149ee60295a6818aff93f0" },
+    { name = "pyyaml", specifier = ">=6" },
+    { name = "suola", url = "https://github.com/Klikkikuri/suola/releases/download/v0.7.0/suola-0.7.0-py3-none-any.whl" },
+    { name = "uvicorn", specifier = ">=0.38" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "beautifulsoup4", specifier = ">=4.13" },
+    { name = "html5lib", specifier = ">=1.1" },
+    { name = "httpx2", specifier = ">=2.16.0" },
+    { name = "hypothesis", specifier = ">=6.140" },
+    { name = "pytest", specifier = ">=8.4" },
+    { name = "soupsieve", specifier = ">=2.8" },
+]
+
+[[package]]
 name = "markupsafe"
 version = "3.0.4"
 source = { registry = "https://pypi.org/simple" }
@@ -466,51 +511,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/46/e4/dbbfb2a010c4db2224a5114638acede6fe563d33cc20fb1752cebcbe6298/opentelemetry_semantic_conventions-0.66b1.tar.gz", hash = "sha256:497ca63bf383723411e8eaf60c8779e9877633c936bb641080adab59d0eb6ec8", size = 150250, upload-time = "2026-10-06T17:33:14.073Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/bc/14/67f8aa798857f8cf686f515bf93d9bb877ce952ddc8efae0fa25b45ce0d6/opentelemetry_semantic_conventions-0.66b1-py3-none-any.whl", hash = "sha256:d4cddeb4315490b35213f55e2bdc9ac54bb1e4d318927475bed62b35545e581b", size = 206279, upload-time = "2026-10-06T17:32:56.103Z" },
-]
-
-[[package]]
-name = "paatti-devserver"
-version = "0.1.0"
-source = { editable = "." }
-dependencies = [
-    { name = "faker" },
-    { name = "fastapi" },
-    { name = "jinja2" },
-    { name = "niitti", extra = ["all"] },
-    { name = "pyyaml" },
-    { name = "suola" },
-    { name = "uvicorn" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "beautifulsoup4" },
-    { name = "html5lib" },
-    { name = "httpx2" },
-    { name = "hypothesis" },
-    { name = "pytest" },
-    { name = "soupsieve" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "faker", specifier = ">=38" },
-    { name = "fastapi", specifier = ">=0.120" },
-    { name = "jinja2", specifier = ">=3.1" },
-    { name = "niitti", extras = ["all"], git = "https://github.com/Klikkikuri/Niitti?rev=09333ed0b8498ab8a9149ee60295a6818aff93f0" },
-    { name = "pyyaml", specifier = ">=6" },
-    { name = "suola", url = "https://github.com/Klikkikuri/suola/releases/download/v0.7.0/suola-0.7.0-py3-none-any.whl" },
-    { name = "uvicorn", specifier = ">=0.38" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "beautifulsoup4", specifier = ">=4.13" },
-    { name = "html5lib", specifier = ">=1.1" },
-    { name = "httpx2", specifier = ">=2.16.0" },
-    { name = "hypothesis", specifier = ">=6.140" },
-    { name = "pytest", specifier = ">=8.4" },
-    { name = "soupsieve", specifier = ">=2.8" },
 ]
 
 [[package]]

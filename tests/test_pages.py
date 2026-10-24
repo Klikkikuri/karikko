@@ -1,11 +1,11 @@
 from hypothesis import given, strategies as st
 
-from paatti_devserver import documents
-from paatti_devserver import expectations as ex
-from paatti_devserver.layout import RULES, front_page, site_rules
-from paatti_devserver.markup import render
-from paatti_devserver.settings import BLOCKS
-from paatti_devserver.signing import Signer, ilta_pulu_rules
+from karikko import documents
+from karikko import expectations as ex
+from karikko.layout import RULES, front_page, site_rules
+from karikko.markup import render
+from karikko.settings import BLOCKS
+from karikko.signing import Signer, ilta_pulu_rules
 
 from .conftest import make_settings, state_for
 from .scan import parse, scan
@@ -126,5 +126,5 @@ def test_the_default_front_page_shows_every_status_and_expected_failure():
 
 
 def test_markup_escapes_headlines_as_text():
-    from paatti_devserver.markup import el
+    from karikko.markup import el
     assert render(el("h2", {}, "<b>Exclusive</b> &amp; more")) == "<h2>&lt;b&gt;Exclusive&lt;/b&gt; &amp;amp; more</h2>"

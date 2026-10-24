@@ -1,4 +1,4 @@
-# Paatti development server
+# Karikko
 
 A development server for [Paatti](https://github.com/Klikkikuri/paatti). It serves:
 
@@ -24,7 +24,7 @@ make serve DEVSERVER_ARGS="--seed=42 --chaos.provider_5xx=data"
 Or in this directory:
 
 ```sh
-uv run paatti-devserver --port=3000 --seed=42
+uv run karikko --port=3000 --seed=42
 ```
 
 At start, the server prints the seeds, the features that are off, the faults that are on and off, and the command
@@ -51,6 +51,10 @@ The settings come from the command line and from environment variables with the 
 other source is read (no `.env`, YAML or secrets file), so that the same command gives the same result. A nested
 setting uses `.` on the command line and `__` in the environment: `--chaos.provider_5xx=data` is
 `PAATTI_DEVSERVER_CHAOS__PROVIDER_5XX=data`. A set takes a comma-separated list.
+
+The prefix predates the `karikko` name and stays: Paatti's settings, scripts and page markup read it, and it is
+part of their interface. The name of the package, of the CLI and of the image is `karikko`; only the `PAATTI_DEVSERVER_*`
+environment keys and the `data-devserver-*` attributes keep the old spelling.
 
 | Setting | Default | Meaning |
 | --- | --- | --- |
@@ -151,7 +155,8 @@ nothing. Delete a folder to forget that host.
 - The provider's `sites.json` has the sites of all folders, without `enabled`, because Paatti does not offer a
   provider's site that is off.
 - The provider's `rules.json` has the rules of all folders, then a catch-all rule, so that Paatti can sign the links
-  of any host. The server signs with the same rules before the base rules (`suola/rules.yaml`), as Paatti does. A
+  of any host. The server signs with the same rules before the base rules (the packaged `base_rules.yaml` copy of
+  `suola/rules.yaml`), as Paatti does. A
   folder rule thus wins against a base rule for the same domain, and a rule for a parent domain also signs the links
   of the other folders.
 - The signs are made when the provider serves `data.json`. A change to `rules.json` thus applies at the next database

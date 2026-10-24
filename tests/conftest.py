@@ -5,8 +5,8 @@ import pytest
 from fastapi.testclient import TestClient
 from hypothesis import HealthCheck, settings as hypothesis_settings
 
-from paatti_devserver.app import build_state, create_app
-from paatti_devserver.settings import Settings
+from karikko.app import build_state, create_app
+from karikko.settings import Settings
 
 # `dev` keeps a random search and an example database; `ci` repeats the same examples on each run.
 hypothesis_settings.register_profile("dev", max_examples=30, deadline=None,

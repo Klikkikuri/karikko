@@ -3,8 +3,8 @@
 The extension signs a link to a host that a provider supplies with the provider's named rule set: the provider's
 rules before the base rules, so that a provider rule wins against a base rule with the same domain and weight
 (`defineRules` in suola/docs/api.md). `append_rules()` puts the rules after the base rules, so `Signer` builds the
-same sequence from the submodule's `rules.yaml` instead. The wheel and the submodule have the same tag
-(pyproject.toml), so the two copies of the base rules are the same. Suola compares a rule's domain with
+same sequence from the packaged `base_rules.yaml` instead. The base rules and the wheel have the same suola tag
+(pyproject.toml), so the copy follows the signed suola version. Suola compares a rule's domain with
 `host:port`, so the Ilta-Pulu domain carries the port.
 
 The captured-sites rule is a catch-all (`domain: ""`), so that any host can be signed when the base rules have no
@@ -21,7 +21,7 @@ from pathlib import Path
 import yaml
 from suola import InvalidURLError, Suola
 
-BASE_RULES = Path(__file__).resolve().parents[3] / "suola" / "rules.yaml"
+BASE_RULES = Path(__file__).parent / "base_rules.yaml"
 
 ARTICLE_PATTERN = r"^/(?P<Section>[A-Za-z]+)/a/(?P<ArticleID>[0-9a-f]{12})"
 ARTICLE_TEMPLATE = "http://localhost/{{ .Section }}/a/{{ .ArticleID }}"

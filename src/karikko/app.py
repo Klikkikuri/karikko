@@ -41,7 +41,7 @@ def build_state(settings: Settings) -> State:
 def create_app(settings: Settings) -> FastAPI:
     from .routers import api, manifest, site
 
-    app = FastAPI(title="Paatti development server", version="0.1.0")
+    app = FastAPI(title="Karikko", version="0.1.0")
     app.state.devserver = build_state(settings)
     app.state.templates = Jinja2Templates(directory=PACKAGE / "templates")
     app.state.captured = CapturedSites(settings)

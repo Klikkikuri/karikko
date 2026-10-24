@@ -2,7 +2,7 @@ import shlex
 
 import pytest
 
-from paatti_devserver.settings import CHAOS_PROFILES, ChaosSettings, Settings
+from karikko.settings import CHAOS_PROFILES, ChaosSettings, Settings
 
 from .conftest import make_settings
 
@@ -51,12 +51,12 @@ def test_reproduce_command_gives_the_same_settings():
 
 
 @pytest.mark.parametrize("chaos, expected", [
-    ({}, "paatti-devserver --pool_seed=1"),
+    ({}, "karikko --pool_seed=1"),
     ({"rate": 0.03, "provider_5xx": "data"},
-     "paatti-devserver --pool_seed=1 --chaos.rate=0.03 --chaos.provider_5xx=data"),
+     "karikko --pool_seed=1 --chaos.rate=0.03 --chaos.provider_5xx=data"),
     (dict(CHAOS_PROFILES["true"], provider_timeout=""),
-     "paatti-devserver --pool_seed=1 --chaos=true --chaos.provider_timeout="),
-    (dict(CHAOS_PROFILES["all"], rate=0.5), "paatti-devserver --pool_seed=1 --chaos=all --chaos.rate=0.5"),
+     "karikko --pool_seed=1 --chaos=true --chaos.provider_timeout="),
+    (dict(CHAOS_PROFILES["all"], rate=0.5), "karikko --pool_seed=1 --chaos=all --chaos.rate=0.5"),
 ])
 def test_reproduce_command_names_the_nearest_chaos_profile(chaos, expected):
     original = make_settings(chaos=chaos)

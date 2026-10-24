@@ -1,8 +1,8 @@
 import pytest
 
-from paatti_devserver import expectations as ex
-from paatti_devserver.pool import build_pool
-from paatti_devserver.settings import FeatureSettings
+from karikko import expectations as ex
+from karikko.pool import build_pool
+from karikko.settings import FeatureSettings
 
 CASE_FLAGS = ["levels", "ai_slop", "video", "sponsored", "paywalled", "no_entry", "edge_headlines", "xfail"]
 
@@ -34,8 +34,8 @@ def test_invented_surnames_are_not_in_fakers_surname_list():
     """Faker's surnames include real public figures; a fake clickbait about a real person can defame them."""
     from faker.providers.person.en_US import Provider
 
-    from paatti_devserver.headlines import invented_surname
-    from paatti_devserver.rng import rng
+    from karikko.headlines import invented_surname
+    from karikko.rng import rng
 
     real = {name.lower() for name in Provider.last_names}
     drawn = {invented_surname(rng("surname", i)).lower() for i in range(2000)}

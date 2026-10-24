@@ -1,0 +1,231 @@
+# Generated from Klikkikuri/suola at the tag of the `suola` wheel reference (pyproject.toml):
+#   curl -fsSL https://raw.githubusercontent.com/Klikkikuri/suola/<tag>/rules.yaml -o src/karikko/base_rules.yaml
+# CI re-derives it and fails on a stale copy. Do not edit by hand.
+# yaml-language-server: $schema=./docs/rules.schema.json
+
+# YAML rules for canonical URL generation for news websites.
+# When adding rules, ensure to include possibility of query parameters. Example:
+#   - /path/to/article?utm_source=google"
+#   - /path/to/article/
+#   - /path/to/article
+#   - /path/to/article/?ref=homepage
+# The rules should match all these variants and produce the same canonical URL, IF the
+# query parameters are not part of the canonical URL.
+
+sites:
+  - domain: aksa.fi
+    templates:
+      - pattern: "^/(?P<ArticleTitle>[^/]+)/{0,1}?"
+        template: "https://aksa.fi/{{ .ArticleTitle }}"
+    tests:
+      - url: https://aksa.fi/aanekosken-keilailuliiton-mestaruudet-on-ratkottu-aanekoskella-ja-saarijarvella-maailmanmestaruudet-hong-kongissa/
+        expected: https://aksa.fi/aanekosken-keilailuliiton-mestaruudet-on-ratkottu-aanekoskella-ja-saarijarvella-maailmanmestaruudet-hong-kongissa
+        signature: 992b74d32c98df49159acffa299ab51a6d1f24b368e08860f29f06c14419ae08
+
+  - domain: iltalehti.fi
+    templates:
+      - pattern: "^/(?P<Section>[^/]+)/a/(?P<ArticleID>[^/]+)"
+        template: "https://www.iltalehti.fi/{{ .Section }}/a/{{ .ArticleID }}"
+        transform:
+          Section: "lowercase"
+    tests:
+      - url: https://www.iltalehti.fi/kotimaa/a/7d3c5ba2-66bd-473e-9c0b-fc3ec26abe80
+        expected: https://www.iltalehti.fi/kotimaa/a/7d3c5ba2-66bd-473e-9c0b-fc3ec26abe80
+        signature: 7e530349c32069a7dc25485ee2886f8f88e4b8560202fec1cb3200bd8c550b4c
+
+  - domain: www.talouselama.fi
+    # https://www.talouselama.fi/uutiset/a/bda97ab5-434d-4248-8f18-fa9e1f6a5c96
+    templates:
+      - pattern: "^/uutiset/a/(?P<ArticleID>[0-9a-f-]{36})"
+        template: "https://www.talouselama.fi/uutiset/a/{{ .ArticleID }}"
+    tests:
+      - url: https://www.talouselama.fi/uutiset/a/5e12fadb-217d-4841-80cb-1cb5a89e2d9d
+        expected: https://www.talouselama.fi/uutiset/a/5e12fadb-217d-4841-80cb-1cb5a89e2d9d
+        signature: 95eece0fe1114f8cbf620bf72c0427068ca3ded216d141f1516492c9a6e2206d
+      - url: https://www.talouselama.fi/uutiset/a/5e12fadb-217d-4841-80cb-1cb5a89e2d9d?utm_source=facebook
+        expected: https://www.talouselama.fi/uutiset/a/5e12fadb-217d-4841-80cb-1cb5a89e2d9d
+        signature: 95eece0fe1114f8cbf620bf72c0427068ca3ded216d141f1516492c9a6e2206d
+  - domain: www.tivi.fi
+    templates:
+      - pattern: "^/uutiset/a/(?P<ArticleID>[0-9a-f-]{36})"
+        template: "https://www.tivi.fi/uutiset/a/{{ .ArticleID }}"
+      - pattern: "^/blogit/a/(?P<ArticleID>[0-9a-f-]{36})"
+        template: "https://www.tivi.fi/blogit/a/{{ .ArticleID }}"
+    tests:
+      - url: https://www.tivi.fi/uutiset/a/51f326fc-388f-418d-a505-ff239b270b51
+        expected: https://www.tivi.fi/uutiset/a/51f326fc-388f-418d-a505-ff239b270b51
+        signature: 166ead545f4084a9599a666d83c408ca05a494a9ade70defd58175efddad29da
+      - url: https://www.tivi.fi/luetuimmat
+        xfail: true
+
+  - domain: is.fi
+    templates:
+      # NOTE: The MaybeOutlet should contain the leading slash / when inserted to the template.
+      - pattern: "(?P<MaybeOutlet>^/[^/]+)?/(?P<Section>[^/]+)/(?P<ArticleDocument>[^/]+)"
+        template: "https://www.is.fi{{ .MaybeOutlet }}/{{ .Section }}/{{ .ArticleDocument }}"
+    tests:
+      - url: https://www.is.fi/menaiset/tyyli/art-2000011677707.html
+        expected: https://www.is.fi/menaiset/tyyli/art-2000011677707.html
+        signature: fc027d5345edac805d60218db44e087c046592c10d6988262bcc2556f276633e
+      - url: https://www.is.fi/tyyli/art-2000011677707.html
+        expected: https://www.is.fi/tyyli/art-2000011677707.html
+        signature: 4d8ec582a49f6622ea35ceb6508815f78c1834ce2dbae622cd12f3dfad7129f6
+      - url: https://www.is.fi/tyyli/art-2000011677707.html?utm_source=fb&utm_medium=social&utm_campaign=share
+        expected: https://www.is.fi/tyyli/art-2000011677707.html
+        signature: 4d8ec582a49f6622ea35ceb6508815f78c1834ce2dbae622cd12f3dfad7129f6
+
+
+  - domain: mtvuutiset.fi
+    templates:
+      # NOTE: The MaybeSection should contain the leading slash / when inserted to the template.
+      - pattern: "(?P<MaybeSection>^/[^/]+)?/artikkeli/(?P<ArticleTitle>[^/]+)/(?P<ArticleID>[^/]+)"
+        template: "https://www.mtvuutiset.fi{{ .MaybeSection }}/artikkeli/{{ .ArticleTitle }}/{{ .ArticleID }}"
+    tests:
+      - url: https://www.mtvuutiset.fi/artikkeli/spermaskandaali-paisuu-euroopassa/9268218
+        expected: https://www.mtvuutiset.fi/artikkeli/spermaskandaali-paisuu-euroopassa/9268218
+        signature: 61861193e02d89b0176a88aa0c3473d29c4742522a59d4111f08dcd5e3f6417c
+
+  - domain: yle.fi
+    templates:
+      - pattern: "/(uutiset|a)(/lyhyesti)?/(?P<ArticleID>[^/]+)"
+        template: "https://yle.fi/a/{{ .ArticleID }}"
+    tests:
+      - url: https://yle.fi/uutiset/lyhyesti/74-20194304
+        expected: https://yle.fi/a/74-20194304
+        signature: f0f7af3fb1130daa54674b37f55c16cc647b871b93aadf919531416790565487
+
+  - domain: www.verkkouutiset.fi
+    templates:
+      - pattern: "^/a/(?P<ArticleSlug>[^/]+)(?:/)?$"
+        template: "https://www.verkkouutiset.fi/a/{{ .ArticleSlug }}/"
+    tests:
+      - url: https://www.verkkouutiset.fi/sign-up/
+        xfail: true
+      - url: https://www.verkkouutiset.fi/a/sahkon-hinta-on-suomalaisille-yha-mysteeri/
+        expected: https://www.verkkouutiset.fi/a/sahkon-hinta-on-suomalaisille-yha-mysteeri/
+        signature: d7d3116b1ab2adab588093ff253581e4b96add839cf099fbe87896386ac7c584
+      - url: https://www.verkkouutiset.fi/a/sahkon-hinta-on-suomalaisille-yha-mysteeri/?utm_source=newsletter
+        expected: https://www.verkkouutiset.fi/a/sahkon-hinta-on-suomalaisille-yha-mysteeri/
+        signature: d7d3116b1ab2adab588093ff253581e4b96add839cf099fbe87896386ac7c584
+      - url: https://www.verkkouutiset.fi/a/sahkon-hinta-on-suomalaisille-yha-mysteeri?utm_source=newsletter
+        expected: https://www.verkkouutiset.fi/a/sahkon-hinta-on-suomalaisille-yha-mysteeri/
+        signature: d7d3116b1ab2adab588093ff253581e4b96add839cf099fbe87896386ac7c584
+
+  - domain: faktabaari.fi
+    templates:
+      - pattern: "^/fakta/(?P<ArticleSlug>[^/]+)(?:/)?$"
+        template: "https://faktabaari.fi/fakta/{{ .ArticleSlug }}/"
+      - pattern: "^/nakokulmat/(?P<OpinionSlug>[^/]+)(?:/)?$"
+        template: "https://faktabaari.fi/nakokulmat/{{ .OpinionSlug }}/"
+    tests:
+      - url: https://faktabaari.fi/fakta/myytti-eu-alistaa-jasenvaltiot/
+        expected: https://faktabaari.fi/fakta/myytti-eu-alistaa-jasenvaltiot/
+        signature: d1cd5a2d3bf3b51c58031bb153e58e3e6247e0bcb850a05c89dcf00faa3d17b8
+      - url: https://faktabaari.fi/fakta/sveitsi-norja-menestyvat-eu-ulkopuolella/
+        expected: https://faktabaari.fi/fakta/sveitsi-norja-menestyvat-eu-ulkopuolella/
+        signature: c563acc599f2d46650dc1c9db8d01aff4ebe536cdab0fc3325855a9209cec5a2
+      - url: https://faktabaari.fi/nakokulmat/faktabaari-korkeatasoista-julkista-eu-keskustelua/
+        expected: https://faktabaari.fi/nakokulmat/faktabaari-korkeatasoista-julkista-eu-keskustelua/
+        signature: b12e7148965241984caa35c0492d9a12fe04e0936aab923c6b917d285e44c03e
+      - url: https://faktabaari.fi/nakokulmat/faktabaari-korkeatasoista-julkista-eu-keskustelua?utm_source=test
+        expected: https://faktabaari.fi/nakokulmat/faktabaari-korkeatasoista-julkista-eu-keskustelua/
+        signature: b12e7148965241984caa35c0492d9a12fe04e0936aab923c6b917d285e44c03e
+      - url: https://faktabaari.fi/nakokulmat/tervetuloa/
+        expected: https://faktabaari.fi/nakokulmat/tervetuloa/
+        signature: 2267c883a2b056dac031b1ca4f684384299363c407344da084460c045e0c0bdc
+
+  - domain: hs.fi
+    templates:
+      - pattern: "^/(?P<Section>[^/]+)/art-(?P<ArticleID>[^/]+).html"
+        template: "https://www.hs.fi/{{ .Section }}/art-{{ .ArticleID }}.html"
+    tests:
+      - url: https://www.hs.fi/politiikka/art-2000011689981.html
+        expected: https://www.hs.fi/politiikka/art-2000011689981.html
+        signature: a3d65efdf3ecf6d6400d78e0c64b9578acc769563ebf4a2398f425b024443ea1
+      - url: https://www.hs.fi/urheilu/art-2000011690526.html
+        expected: https://www.hs.fi/urheilu/art-2000011690526.html
+        signature: c36813d09cd27e844c29c989a96b787fe754d1f04fb713551c71936f49dcb590
+
+  - domain: www.svt.se
+    templates:
+      - pattern: "^/nyheter/lokalt/(?P<Region>[^/]+)/(?P<ArticleSlug>[^/]+)/?$"
+        template: "https://www.svt.se/nyheter/lokalt/{{ .Region }}/{{ .ArticleSlug }}"
+      - pattern: "^/nyheter/(?P<Category>inrikes|utrikes)/(?P<ArticleSlug>[^/]+)/?$"
+        template: "https://www.svt.se/nyheter/{{ .Category }}/{{ .ArticleSlug }}"
+      - pattern: "^/nyhetskoll/(?P<ArticleSlug>[^/]+)/?$"
+        template: "https://www.svt.se/nyhetskoll/{{ .ArticleSlug }}"
+    tests:
+      - url: https://www.svt.se/nyheter/lokalt/varmland/ridande-luciatag-mangarig-tradition-i-karlstad-maste-sjunga-hogre
+        expected: https://www.svt.se/nyheter/lokalt/varmland/ridande-luciatag-mangarig-tradition-i-karlstad-maste-sjunga-hogre
+        signature: cca1350870598af7498cfca7caf025865ad3a652fc41ad53173749f91e01c23a
+      - url: https://www.svt.se/nyheter/lokalt/varmland/ridande-luciatag-mangarig-tradition-i-karlstad-maste-sjunga-hogre?utm_source=rss
+        expected: https://www.svt.se/nyheter/lokalt/varmland/ridande-luciatag-mangarig-tradition-i-karlstad-maste-sjunga-hogre
+        signature: cca1350870598af7498cfca7caf025865ad3a652fc41ad53173749f91e01c23a
+      - url: https://www.svt.se/nyheter/inrikes/l-etablerade-flyktingar-ska-fa-stanna-lite-kaxigt-va
+        expected: https://www.svt.se/nyheter/inrikes/l-etablerade-flyktingar-ska-fa-stanna-lite-kaxigt-va
+        signature: de47201890cca65fdabc41bdc3e088b9e85cb53f162da96fe92b439a6850fe98
+      - url: https://www.svt.se/nyheter/inrikes/l-etablerade-flyktingar-ska-fa-stanna-lite-kaxigt-va?ref=homepage
+        expected: https://www.svt.se/nyheter/inrikes/l-etablerade-flyktingar-ska-fa-stanna-lite-kaxigt-va
+        signature: de47201890cca65fdabc41bdc3e088b9e85cb53f162da96fe92b439a6850fe98
+      - url: https://www.svt.se/nyheter/utrikes/flera-skjutna-vid-brown-university
+        expected: https://www.svt.se/nyheter/utrikes/flera-skjutna-vid-brown-university
+        signature: de55cb987475b4defabe713f25c26b8806515eada23c42b4cb24218e4ad0e080
+      - url: https://www.svt.se/nyheter/utrikes/flera-skjutna-vid-brown-university?utm_source=social&utm_medium=facebook
+        expected: https://www.svt.se/nyheter/utrikes/flera-skjutna-vid-brown-university
+        signature: de55cb987475b4defabe713f25c26b8806515eada23c42b4cb24218e4ad0e080
+      - url: https://www.svt.se/nyhetskoll/elsa-haktades-som-17-aring-jag-satt-inlast-i-126-dagar/
+        expected: https://www.svt.se/nyhetskoll/elsa-haktades-som-17-aring-jag-satt-inlast-i-126-dagar
+        signature: d7a82dc45caff0fd78b872466019f870da3c2dcf9ded4e561547b6fc54508771
+      - url: https://www.svt.se/nyhetskoll/elsa-haktades-som-17-aring-jag-satt-inlast-i-126-dagar?utm_source=email
+        expected: https://www.svt.se/nyhetskoll/elsa-haktades-som-17-aring-jag-satt-inlast-i-126-dagar
+        signature: d7a82dc45caff0fd78b872466019f870da3c2dcf9ded4e561547b6fc54508771
+
+  # Any host without a named rule. Host and path only: the query is dropped and trailing slashes are
+  # trimmed, so tracking parameters do not split an article. A site whose articles differ only by query
+  # needs a named rule. See the README.
+  - domain: ""
+    templates:
+      # The capture keeps its leading slash, so a path of only slashes trims to "/" like every other path.
+      - pattern: "^(?P<Path>/.*?)/*$"
+        template: "https://{{ .Host }}{{ .Path }}"
+    tests:
+      - url: https://unknown.example/news/story
+        expected: https://unknown.example/news/story
+        signature: 8a8eda7ebdf27c81416fd9f9c75412f2407c7a588aae37bce0c7073670047876
+      - url: https://UNKNOWN.example/news/story/?utm_source=rss&fbclid=x
+        expected: https://unknown.example/news/story
+        signature: 8a8eda7ebdf27c81416fd9f9c75412f2407c7a588aae37bce0c7073670047876
+      - url: https://unknown.example/a/../b
+        expected: https://unknown.example/b
+        signature: 2d6e2585fe2e279602b3349c3651d85037b4484a9d5e5650b26ba2bdb814909c
+      # A non-standard port is a different site, so it keeps its own signature. The default port is removed.
+      - url: https://unknown.example:8443/news/story
+        expected: https://unknown.example:8443/news/story
+        signature: 617ea2a1882fdb4b4f0c1ad443c129e9fa6df67f1426b6d39a3878a8646d9b60
+      - url: https://unknown.example:443/news/story
+        expected: https://unknown.example/news/story
+        signature: 8a8eda7ebdf27c81416fd9f9c75412f2407c7a588aae37bce0c7073670047876
+      # The root, a bare host, and a bare host with only a query are one URL; see normalizeURL.
+      - url: https://unknown.example/
+        expected: https://unknown.example/
+        signature: 3075048aecc62395fb2f8adfb7c06bd71ac99129097370500a77bd40c5c30334
+      - url: https://unknown.example
+        expected: https://unknown.example/
+        signature: 3075048aecc62395fb2f8adfb7c06bd71ac99129097370500a77bd40c5c30334
+      - url: https://unknown.example?utm_source=rss
+        expected: https://unknown.example/
+        signature: 3075048aecc62395fb2f8adfb7c06bd71ac99129097370500a77bd40c5c30334
+      # A path of only slashes is the root, as nginx and Apache serve it. Slashes inside a path are kept.
+      - url: https://unknown.example//
+        expected: https://unknown.example/
+        signature: 3075048aecc62395fb2f8adfb7c06bd71ac99129097370500a77bd40c5c30334
+      - url: https://unknown.example///
+        expected: https://unknown.example/
+        signature: 3075048aecc62395fb2f8adfb7c06bd71ac99129097370500a77bd40c5c30334
+      # Deliberate: articles told apart only by a query collide. Such a site needs a named rule.
+      - url: https://unknown.example/article?id=1
+        expected: https://unknown.example/article
+        signature: 9c2e61041d70394bca8533e7f8e57ac229736b2ef6b544df8def817a1dd111aa
+      - url: https://unknown.example/article?id=2
+        expected: https://unknown.example/article
+        signature: 9c2e61041d70394bca8533e7f8e57ac229736b2ef6b544df8def817a1dd111aa

@@ -1,4 +1,4 @@
-"""`paatti-devserver`: start the development server."""
+"""`karikko`: start the development server."""
 
 import uvicorn
 from niitti.logging import setup_logging
