@@ -50,4 +50,4 @@ jobs:
         with:
           files: dist/karikko-${{ env.VERSION }}-py3-none-any.whl
       - name: Print the image digest
-        run: docker buildx imagetools inspect ghcr.io/${{ github.repository }}:${{ env.VERSION }}
+        run: docker buildx imagetools inspect "ghcr.io/${GITHUB_REPOSITORY,,}:${VERSION}"
