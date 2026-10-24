@@ -27,7 +27,6 @@ dev = [
     "beautifulsoup4>=4.13",
     "soupsieve>=2.8",
     "html5lib>=1.1",
-    "playwright>=1.55",
     "httpx2>=2.16.0",
 ]
 
@@ -38,7 +37,6 @@ niitti = { git = "https://github.com/Klikkikuri/Niitti", rev = "09333ed0b8498ab8
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "--ignore=tests/e2e"
 
 [build-system]
 requires = ["uv_build>=0.13.1,<0.14.0"]
