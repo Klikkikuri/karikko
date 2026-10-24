@@ -14,7 +14,17 @@ How to add the provider to Paatti is in Paatti's README, section "Development Se
 
 ## Run
 
-The project uses [uv](https://docs.astral.sh/uv/). From Paatti's repository root:
+The image is the primary artifact:
+
+```sh
+docker run --rm -p 3000:3000 -v "$PWD/test_data:/data" ghcr.io/klikkikuri/karikko:0.1.0
+```
+
+The container binds `0.0.0.0` but signs its rules for `localhost:<port>`, so the published port must equal
+`--port`, which is `3000` by default.
+
+For development with live settings and seeds, the server also runs from a checkout with
+[uv](https://docs.astral.sh/uv/). From Paatti's repository root:
 
 ```sh
 make serve                                         # http://localhost:3000/
