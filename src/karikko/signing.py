@@ -5,10 +5,11 @@ rules before the base rules, so that a provider rule wins against a base rule wi
 (`defineRules` in suola/docs/api.md). `append_rules()` puts the rules after the base rules, so `Signer` builds the
 same sequence from the packaged `base_rules.yaml` instead. The base rules and the wheel have the same suola tag
 (pyproject.toml), so the copy follows the signed suola version. Suola compares a rule's domain with
-`host:port`, so the Ilta-Pulu domain carries the port.
+`host:port`, so the Ilta-Pulu document carries the port of the request.
 
-The captured-sites rule is a catch-all (`domain: ""`), so that any host can be signed when the base rules have no
-catch-all. While the base rules have one, it has the same template, so the order of the two does not change a sign.
+The base rules carry the named rules of the published sites. Suola signs only a host that a rule matches, so a
+provider that must sign any host adds a catch-all (`domain: ""`) rule: the captured-sites provider has one, and
+Ilta-Pulu has none, because it serves only its own site.
 
 An instance is safe to share between threads, which FastAPI needs because it runs `def` endpoints in a thread pool.
 """
@@ -26,22 +27,13 @@ BASE_RULES = Path(__file__).parent / "base_rules.yaml"
 ARTICLE_PATTERN = r"^/(?P<Section>[A-Za-z]+)/a/(?P<ArticleID>[0-9a-f]{12})"
 ARTICLE_TEMPLATE = "http://localhost/{{ .Section }}/a/{{ .ArticleID }}"
 
-CAPTURE_RULES = {
-    "sites": [{
-        "domain": "",
-        "templates": [{"pattern": r"^(?P<Path>/.*?)/*$", "template": "https://{{ .Host }}{{ .Path }}"}],
-        "tests": [
-            {"url": "https://unknown.example/news/story",
-             "signature": "8a8eda7ebdf27c81416fd9f9c75412f2407c7a588aae37bce0c7073670047876"},
-            {"url": "https://UNKNOWN.example/news/story/?utm_source=rss&fbclid=x",
-             "signature": "8a8eda7ebdf27c81416fd9f9c75412f2407c7a588aae37bce0c7073670047876"},
-        ],
-    }]
-}
-
 
 def ilta_pulu_rules(netloc: str, tests: list[dict] | None = None) -> dict:
-    """The Suola rules of Ilta-Pulu for a server at `netloc` (`localhost:3000`, or `localhost` on port 80)."""
+    """The Suola rules of Ilta-Pulu for a server at `netloc` (`localhost:3000`, or `localhost` on port 80).
+
+    `netloc` is only the domain that the rule matches. The template normalizes an article to a fixed URL, so a
+    request at any address signs to the same value. The pool therefore signs once, at startup.
+    """
     return {
         "sites": [{
             "domain": netloc,

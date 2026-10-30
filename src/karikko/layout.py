@@ -412,7 +412,8 @@ class Builder:
 
 
 def netloc(settings: Settings) -> str:
-    """The host and port that a browser uses for the server. Suola matches rule domains on this."""
+    """The configured address of the server: `localhost:<port>`. The pool signs and the absolute hrefs of a page
+    use it. The provider documents use the address of the request instead (see documents.py)."""
     return "localhost" if settings.port == 80 else f"localhost:{settings.port}"
 
 

@@ -8,9 +8,9 @@ from fastapi.testclient import TestClient
 
 from karikko import expectations as ex
 from karikko.app import create_app
-from karikko.captured import FAKE_PREFIX, fake_entry
+from karikko.captured import CAPTURE_RULES, FAKE_PREFIX, fake_entry
 from karikko.settings import FeatureSettings
-from karikko.signing import BASE_RULES, CAPTURE_RULES, Signer
+from karikko.signing import BASE_RULES, Signer
 
 from .conftest import make_settings
 
@@ -301,6 +301,10 @@ BASE_TEST_URLS = [case["url"] for site in yaml.safe_load(BASE_RULES.read_text())
 
 
 @pytest.mark.parametrize("url", ["https://unknown.example/news/story", *BASE_TEST_URLS])
-def test_the_catch_all_over_the_submodule_rules_signs_as_the_wheel_does(url):
-    """Fails when the wheel and the submodule do not have the same rules: change both together."""
-    assert SIGNER.sign(url) == Signer().sign(url)
+def test_the_submodule_rules_sign_as_the_wheel_does(url):
+    """Fails when the wheel and the submodule do not have the same rules: change both together.
+
+    An empty layer makes the local copy sign alone, so the comparison holds whether or not a catch-all is part
+    of it.
+    """
+    assert Signer({"sites": []}).sign(url) == Signer().sign(url)

@@ -8,7 +8,6 @@ from fastapi.responses import JSONResponse
 from niitti.logging import get_logger
 
 from .. import documents
-from ..layout import netloc
 from ..pool import updated_at
 from ..signing import ilta_pulu_rules
 
@@ -24,19 +23,21 @@ def _document(content: dict, settings) -> JSONResponse:
 @router.get("/ilta-pulu/manifest.json", summary="The Ilta-Pulu provider manifest")
 def ilta_pulu_manifest(request: Request):
     settings = request.app.state.devserver.settings
-    return _document(documents.manifest(settings), settings)
+    return _document(documents.manifest(settings, documents.request_origin(request)), settings)
 
 
 @router.get("/ilta-pulu/sites.json", summary="The Ilta-Pulu site configuration")
 def ilta_pulu_sites(request: Request):
     settings = request.app.state.devserver.settings
-    return _document(documents.sites(settings), settings)
+    return _document(documents.sites(settings, documents.request_origin(request)), settings)
 
 
 @router.get("/ilta-pulu/rules.json", summary="The Suola rules that sign Ilta-Pulu article links")
 def ilta_pulu_rules_document(request: Request):
     state = request.app.state.devserver
-    return _document(ilta_pulu_rules(netloc(state.settings), documents.rules_tests(state)), state.settings)
+    origin = documents.request_origin(request)
+    rules = ilta_pulu_rules(documents.request_netloc(request), documents.rules_tests(state, origin))
+    return _document(rules, state.settings)
 
 
 @router.get("/ilta-pulu/data.json", summary="The Rahti data of the Ilta-Pulu article pool")

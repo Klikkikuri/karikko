@@ -37,11 +37,25 @@ from suola import InvalidRulesError
 from . import expectations as ex
 from .headlines import EDGE_PAIRS, fill
 from .rng import faker, rng
-from .signing import CAPTURE_RULES, Signer
+from .signing import Signer
 
 log = get_logger(__name__)
 
 FAKE_PREFIX = "[dev] "
+
+# The provider's catch-all (see signing.py): a captured host signs even when it has no named rule of its own yet.
+CAPTURE_RULES = {
+    "sites": [{
+        "domain": "",
+        "templates": [{"pattern": r"^(?P<Path>/.*?)/*$", "template": "https://{{ .Host }}{{ .Path }}"}],
+        "tests": [
+            {"url": "https://unknown.example/news/story",
+             "signature": "8a8eda7ebdf27c81416fd9f9c75412f2407c7a588aae37bce0c7073670047876"},
+            {"url": "https://UNKNOWN.example/news/story/?utm_source=rss&fbclid=x",
+             "signature": "8a8eda7ebdf27c81416fd9f9c75412f2407c7a588aae37bce0c7073670047876"},
+        ],
+    }]
+}
 
 
 class CaptureHostError(ValueError):

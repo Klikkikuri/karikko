@@ -20,8 +20,9 @@ The image is the primary artifact:
 docker run --rm -p 3000:3000 -v "$PWD/test_data:/data" ghcr.io/klikkikuri/karikko:0.1.0
 ```
 
-The container binds `0.0.0.0` but signs its rules for `localhost:<port>`, so the published port must equal
-`--port`, which is `3000` by default.
+The container binds `0.0.0.0`. The provider documents name the address of the request, so the published port
+can differ from `--port`: a browser that opens `http://localhost:8080/` gets rules, a site and links for
+`localhost:8080`.
 
 For development with live settings and seeds, the server also runs from a checkout with
 [uv](https://docs.astral.sh/uv/). From Paatti's repository root:
@@ -69,7 +70,7 @@ environment keys and the `data-devserver-*` attributes keep the old spelling.
 | Setting | Default | Meaning |
 | --- | --- | --- |
 | `host` | `127.0.0.1` | The address to listen on. Use `localhost` if your browser tries `::1` first. |
-| `port` | `3000` | The port. Suola matches a rule's domain with `host:port`, so the Ilta-Pulu rules carry the port. |
+| `port` | `3000` | The port to listen on. Suola matches a rule's domain with `host:port`; the provider documents carry the address of the request, so a published port can differ. |
 | `seed` | none | The page seed of `/`. Without it, `/` redirects to a random seed. |
 | `pool_seed` | `1` | The seed of the article pool, and thus of `data.json`. A page seed changes only the layout. |
 | `data_dir` | `test_data` | The directory for captured pages and the download cache. |
@@ -165,8 +166,8 @@ nothing. Delete a folder to forget that host.
 - The provider's `sites.json` has the sites of all folders, without `enabled`, because Paatti does not offer a
   provider's site that is off.
 - The provider's `rules.json` has the rules of all folders, then a catch-all rule, so that Paatti can sign the links
-  of any host. The server signs with the same rules before the base rules (the packaged `base_rules.yaml` copy of
-  `suola/rules.yaml`), as Paatti does. A
+  of any host. Ilta-Pulu has no catch-all, because it serves only its own site. The server signs with the same rules
+  before the base rules (the packaged `base_rules.yaml` copy of `suola/rules.yaml`), as Paatti does. A
   folder rule thus wins against a base rule for the same domain, and a rule for a parent domain also signs the links
   of the other folders.
 - The signs are made when the provider serves `data.json`. A change to `rules.json` thus applies at the next database
