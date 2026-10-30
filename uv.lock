@@ -300,7 +300,7 @@ requires-dist = [
     { name = "jinja2", specifier = ">=3.1" },
     { name = "niitti", extras = ["all"], git = "https://github.com/Klikkikuri/Niitti?rev=09333ed0b8498ab8a9149ee60295a6818aff93f0" },
     { name = "pyyaml", specifier = ">=6" },
-    { name = "suola", url = "https://github.com/Klikkikuri/suola/releases/download/v0.7.0/suola-0.7.0-py3-none-any.whl" },
+    { name = "suola", url = "https://github.com/Klikkikuri/suola/releases/download/v0.7.1/suola-0.7.1-py3-none-any.whl" },
     { name = "uvicorn", specifier = ">=0.38" },
 ]
 
@@ -820,13 +820,13 @@ wheels = [
 
 [[package]]
 name = "suola"
-version = "0.7.0"
-source = { url = "https://github.com/Klikkikuri/suola/releases/download/v0.7.0/suola-0.7.0-py3-none-any.whl" }
+version = "0.7.1"
+source = { url = "https://github.com/Klikkikuri/suola/releases/download/v0.7.1/suola-0.7.1-py3-none-any.whl" }
 dependencies = [
     { name = "wasmtime" },
 ]
 wheels = [
-    { url = "https://github.com/Klikkikuri/suola/releases/download/v0.7.0/suola-0.7.0-py3-none-any.whl", hash = "sha256:6165e15fd9aab31d2ad4a1eb74bce3b721822394249ae9be00ff49066b091608" },
+    { url = "https://github.com/Klikkikuri/suola/releases/download/v0.7.1/suola-0.7.1-py3-none-any.whl", hash = "sha256:d446e6ff4d38e043f0e2581bc84764c6c225f9a03c4a9681845fe2db92217f0b" },
 ]
 
 [package.metadata]

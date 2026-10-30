@@ -3,8 +3,12 @@ import json
 import pytest
 
 from karikko.chaos import MANIFEST_MAX_BYTES, RESOURCE_MAX_BYTES
+from karikko.signing import Signer, ilta_pulu_rules
 
 DOCUMENTS = ["manifest", "sites", "rules", "data"]
+
+# What the browser of the developer sends.
+HOST = {"host": "localhost:3000"}
 
 
 def url(document: str, provider: str = "ilta-pulu") -> str:
@@ -41,7 +45,7 @@ def test_fragments_are_deterministic(client, kind):
 
 
 def test_manifest_matches_the_provider_format(client):
-    manifest = client.get(url("manifest")).json()
+    manifest = client.get(url("manifest"), headers=HOST).json()
     assert manifest["schema_version"] == "0.1.0"
     capture = next(link for link in manifest["links"] if link["rel"] == "x-paatti-dev-capture")
     assert "title" not in capture and capture["href"].startswith("http://localhost:3000/")
@@ -50,15 +54,40 @@ def test_manifest_matches_the_provider_format(client):
     assert "x-paatti-dev" in by_type
 
 
-def test_sites_document_names_only_localhost(client):
-    sites = client.get(url("sites")).json()["sites"]
+def test_sites_document_names_the_request_host(client):
+    sites = client.get(url("sites"), headers=HOST).json()["sites"]
     assert list(sites) == ["localhost"]
     assert sites["localhost"]["origins"] == ["http://localhost/*"]
 
 
 def test_rules_carry_the_port_in_the_domain(client):
-    rules = client.get(url("rules")).json()
-    assert rules["sites"][0]["domain"] == "localhost:3000"
+    rules = client.get(url("rules"), headers=HOST).json()
+    assert [site["domain"] for site in rules["sites"]] == ["localhost:3000"]
+
+
+def test_every_document_follows_a_different_host_header(client):
+    """A server reached by an address that is not localhost serves that address: a container name, an IP."""
+    address = {"host": "172.17.0.2:8080"}
+    sites = client.get(url("sites"), headers=address).json()["sites"]
+    assert list(sites) == ["172.17.0.2"]
+    assert sites["172.17.0.2"]["origins"] == ["http://172.17.0.2/*"]
+    assert sites["172.17.0.2"]["links"][0]["href"] == "http://172.17.0.2:8080/privacy"
+
+    rules = client.get(url("rules"), headers=address).json()["sites"][0]
+    assert rules["domain"] == "172.17.0.2:8080"
+    assert rules["tests"][0]["url"].startswith("http://172.17.0.2:8080/")
+
+    manifest = client.get(url("manifest"), headers=address).json()
+    capture = next(link for link in manifest["links"] if link["rel"] == "x-paatti-dev-capture")
+    assert capture["href"] == "http://172.17.0.2:8080/api/capture"
+
+
+def test_an_article_signs_the_same_at_any_address():
+    """The rule's domain only selects the rule, and the template normalizes to a fixed URL."""
+    path = "/news/a/0123456789ab"
+    here = Signer(ilta_pulu_rules("localhost:3000"))
+    there = Signer(ilta_pulu_rules("172.17.0.2:8080"))
+    assert here.sign(f"http://localhost:3000{path}") == there.sign(f"http://172.17.0.2:8080{path}")
 
 
 def test_the_ignored_resource_is_never_served(client):
