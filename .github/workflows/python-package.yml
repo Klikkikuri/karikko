@@ -21,7 +21,9 @@ jobs:
       # carries a three-line provenance header; compare the copy's body against the suola source.
       - name: Check the base-rules copy
         run: |
-          curl -fsSL https://raw.githubusercontent.com/Klikkikuri/suola/v0.7.0/rules.yaml -o /tmp/rules.yaml
+          tag=$(sed -n 's|.*Klikkikuri/suola/releases/download/\(v[^/]*\)/.*|\1|p' pyproject.toml)
+          test -n "$tag" || { echo "pyproject.toml does not name a suola release tag"; exit 1; }
+          curl -fsSL "https://raw.githubusercontent.com/Klikkikuri/suola/$tag/rules.yaml" -o /tmp/rules.yaml
           tail -n +4 src/karikko/base_rules.yaml > /tmp/base-rules-body.yaml
           diff /tmp/base-rules-body.yaml /tmp/rules.yaml
       - name: Test on Python 3.12

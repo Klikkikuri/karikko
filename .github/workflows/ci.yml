@@ -22,5 +22,8 @@ jobs:
       - name: Check the wheel metadata
         run: |
           unzip -p dist/karikko-*.whl '*/METADATA' > /tmp/metadata.txt
-          grep -F "Requires-Dist: suola @ https://github.com/Klikkikuri/suola/releases/download/v0.7.0/suola-0.7.0-py3-none-any.whl" /tmp/metadata.txt
-          grep -F "Requires-Dist: niitti[all] @ git+https://github.com/Klikkikuri/Niitti@09333ed0b8498ab8a9149ee60295a6818aff93f0" /tmp/metadata.txt
+          suola=$(sed -n 's|.*"suola @ \(https://[^"]*\)".*|\1|p' pyproject.toml)
+          niitti=$(sed -n 's|.*"niitti\[all\] @ \(git+[^"]*\)".*|\1|p' pyproject.toml)
+          test -n "$suola" && test -n "$niitti" || { echo "pyproject.toml does not name both direct references"; exit 1; }
+          grep -F "Requires-Dist: suola @ $suola" /tmp/metadata.txt
+          grep -F "Requires-Dist: niitti[all] @ $niitti" /tmp/metadata.txt
