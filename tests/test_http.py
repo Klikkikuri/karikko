@@ -82,6 +82,17 @@ def test_every_document_follows_a_different_host_header(client):
     assert capture["href"] == "http://172.17.0.2:8080/api/capture"
 
 
+def test_an_ipv6_host_keeps_the_brackets_of_the_url(client):
+    """A URL writes an IPv6 literal with brackets, so the site key and its origin pattern keep them."""
+    address = {"host": "[::1]:8080"}
+    sites = client.get(url("sites"), headers=address).json()["sites"]
+    assert list(sites) == ["[::1]"]
+    assert sites["[::1]"]["origins"] == ["http://[::1]/*"]
+
+    rules = client.get(url("rules"), headers=address).json()["sites"][0]
+    assert rules["domain"] == "[::1]:8080"
+
+
 def test_an_article_signs_the_same_at_any_address():
     """The rule's domain only selects the rule, and the template normalizes to a fixed URL."""
     path = "/news/a/0123456789ab"

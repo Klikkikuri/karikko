@@ -56,16 +56,18 @@ def manifest(settings, origin: str) -> dict:
 def sites(settings, origin: str) -> dict:
     """The site document, keyed and scoped by the host of `origin`."""
     parsed = urlsplit(origin)
+    # A URL writes an IPv6 literal with brackets, and the site key and its origin pattern must use that spelling.
+    host = f"[{parsed.hostname}]" if ":" in parsed.hostname else parsed.hostname
     rules = [{"description": rule["description"], "container": rule["container"], "link": rule["link"],
               "title": rule["title"]} for _, rule in site_rules(settings.features.blocks)]
     return {
         "schema_version": SCHEMA_VERSION,
         "sites": {
-            parsed.hostname: {
+            host: {
                 "name": "Ilta-Pulu",
                 "description": "The fake news site of the Paatti development server",
                 "enabled": True,
-                "origins": [f"{parsed.scheme}://{parsed.hostname}/*"],
+                "origins": [f"{parsed.scheme}://{host}/*"],
                 "links": [{"rel": "x-publisher-policy", "href": f"{origin}/privacy",
                            "title": "Ilta-Pulu publishing policy"}],
                 "rules": rules,
